@@ -5,7 +5,7 @@ schemaVersion: 1.0.1
 # Metadata
 
 name: xray-headless
-version: 1.0.2
+version: 1.0.3
 registry: ghcr.io/misery7100
 
 # ....................... #
@@ -142,7 +142,7 @@ ps:
       command: just
       arguments:
         - ps
-        
+
 logs:
   - exec:
       description: Check logs of the bundle
