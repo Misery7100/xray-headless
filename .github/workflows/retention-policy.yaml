@@ -6,6 +6,9 @@ on:
 jobs:
   clean:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
     name: Clean up old images
     steps:
       - uses: actions/delete-package-versions@v5
