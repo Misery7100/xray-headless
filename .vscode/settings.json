@@ -1,0 +1,29 @@
+{
+    "hadolint.cliOptions": [
+        "--config",
+        ".vscode/.hadolint.yaml"
+    ],
+    "markdownlint.config": {
+        "extends": ".vscode/.markdownlint.yaml"
+    },
+    "editor.codeLens": true,
+    "files.associations": {
+        "*.env*": "env",
+        "*.conf": "toml",
+    },
+    "[json]": {
+        "editor.tabSize": 2,
+    },
+    "[jsonc]": {
+        "editor.tabSize": 2,
+    },
+    "[toml]": {
+        "editor.tabSize": 2,
+    },
+    "[yaml]": {
+        "editor.tabSize": 2,
+    },
+    "[github-actions-workflow]": {
+        "editor.tabSize": 2,
+    }
+}

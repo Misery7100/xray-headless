@@ -1,0 +1,16 @@
+schemaType: ParameterSet
+schemaVersion: 1.1.0
+name: xray-headless-config
+parameters:
+  - name: namespace
+    source:
+      value: proxy-headless
+  - name: ui-port
+    source:
+      value: 2113
+  - name: proxy-port
+    source:
+      value: 1081
+  - name: subscription-url-newline
+    source:
+      path: subscriptions.conf

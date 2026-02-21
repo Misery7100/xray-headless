@@ -1,0 +1,17 @@
+name: Artifacts Retention Policy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    name: Clean up old images
+    steps:
+      - uses: actions/delete-package-versions@v5
+        with:
+          owner: misery7100
+          package-name: xray-headless
+          package-type: container
+          token: ${{ secrets.GITHUB_TOKEN }}
+          delete-only-untagged-versions: true

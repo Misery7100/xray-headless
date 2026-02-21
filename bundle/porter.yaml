@@ -1,0 +1,146 @@
+schemaType: Bundle
+schemaVersion: 1.0.1
+
+# ....................... #
+# Metadata
+
+name: xray-headless
+version: 1.0.2
+registry: ghcr.io/misery7100
+
+# ....................... #
+# High-level configuration
+
+dockerfile: dockerfile.tpl
+mixins:
+  - exec
+
+# ....................... #
+# Parameters
+
+parameters:
+  - name: namespace
+    type: string
+    default: proxy-headless
+    description: The namespace for the bundle services
+    env: COMPOSE_PROJECT_NAME
+    applyTo: &apply-no-scaffold
+      - set
+      - install
+      - upgrade
+      - uninstall
+      - current
+      - list
+  
+  - name: ui-port
+    type: integer
+    default: 2113
+    description: The port for the UI to listen on
+    env: UI_PORT
+    applyTo: *apply-no-scaffold
+  
+  - name: proxy-port
+    type: integer
+    default: 1081
+    description: The port for the proxy to listen on
+    env: PROXY_PORT
+    applyTo: *apply-no-scaffold
+  
+  - name: subscription-url-newline
+    type: string
+    description: Newline-separated list of subscription URLs to use
+    env: SUBSCRIPTION_URL_NEWLINE
+    applyTo: *apply-no-scaffold
+  
+  # Parameters for custom commands
+
+  - name: select_port
+    type: string
+    default: ""
+    applyTo: &apply-set
+      - set
+
+  - name: select_name
+    type: string
+    default: ""
+    applyTo: *apply-set
+  
+  - name: select_fastest
+    type: boolean
+    default: false
+    applyTo: *apply-set
+
+# ....................... #
+# Commands
+
+customActions:
+  scaffold:
+    stateless: true
+    modifies: false
+
+  set:
+    stateless: true
+    modifies: false
+
+# ....................... #
+# Custom commands
+
+scaffold:
+  - exec:
+      description: Copy scaffold files to the output directory
+      command: bash
+      arguments:
+        - -ceu
+        - |
+          cp -n /scaffold/* /out/ || true
+  
+current:
+  - exec:
+      description: Get current proxy configuration
+      command: just
+      arguments:
+        - current
+
+list:
+  - exec:
+      description: List available proxies
+      command: just
+      arguments:
+        - list
+
+set:
+  - exec:
+      description: Set proxy configuration
+      command: just
+      arguments:
+        - set
+        - --port
+        - "${ bundle.parameters.select_port }"
+        - --name
+        - "${ bundle.parameters.select_name }"
+        - --fastest
+        - "${ bundle.parameters.select_fastest }"
+
+# ....................... #
+# Default commands
+
+install:
+  - exec:
+      description: Install bundle
+      command: just
+      arguments: 
+        - install
+  
+upgrade:
+  - exec:
+      description: Upgrade bundle
+      command: just
+      arguments:
+        - upgrade
+
+uninstall:
+  - exec:
+      description: Uninstall bundle
+      command: just
+      arguments: 
+        - uninstall

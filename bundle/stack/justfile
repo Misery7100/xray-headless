@@ -1,0 +1,68 @@
+set quiet
+set shell := ["bash", "-cu"]
+
+# ----------------------- #
+
+export SUBSCRIPTION_URL := `printf "%s\n" "$SUBSCRIPTION_URL_NEWLINE" \
+  | sed '/^[[:space:]]*#/d' \
+  | sed '/^[[:space:]]*$/d' \
+  | paste -sd ',' -`
+
+# ----------------------- #
+# Porter commands
+
+install:
+    docker compose up -d --build
+
+upgrade:
+    docker compose up -d --build
+
+uninstall:
+    docker compose down --volumes --remove-orphans
+
+# ----------------------- #
+# Infrastructure commands
+
+ps:
+    docker compose ps
+
+logs *args="":
+    docker compose logs {{ args }}
+
+# ----------------------- #
+# Application commands
+
+_selector *args="":
+    docker compose exec selector python /app/selector.py {{ args }}
+
+
+current:
+    just _selector current
+
+
+list:
+    just _selector list
+
+
+[arg("port", long, short="p", help="Port to set (direct assignment)")]
+[arg("name", long, short="n", help="Name to lookup and set (substring match)")]
+[arg("fastest", long, short="f", help="Select fastest proxy")]
+set port="" name="" fastest="":
+    @if { \
+        [ -n "{{ port }}" ] && echo 1; \
+        [ -n "{{ name }}" ] && echo 1; \
+        [ "{{ fastest }}" = "true" ] && echo 1; \
+    } | wc -l | grep -qx 1; then \
+        :; \
+    else \
+        echo "Error: specify exactly one of --port, --name, or --fastest"; \
+        exit 1; \
+    fi; \
+    \
+    if [ -n "{{port}}" ]; then \
+        just _selector set-port {{port}}; \
+    elif [ -n "{{name}}" ]; then \
+        just _selector set-name "{{name}}"; \
+    else \
+        just _selector fastest; \
+    fi

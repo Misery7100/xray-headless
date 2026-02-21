@@ -1,0 +1,74 @@
+x-service: &service
+  restart: unless-stopped
+  logging:
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+# ....................... #
+
+services:
+  checker:
+    <<: *service
+    image: kutovoys/xray-checker:v1.2.3
+    environment:
+      SUBSCRIPTION_URL: ${SUBSCRIPTION_URL:?}
+      SUBSCRIPTION_UPDATE: true
+      WEB_SHOW_DETAILS: true
+      XRAY_START_PORT: 11000
+    
+    volumes:
+      - checker:/app
+
+    ports:
+      - "${UI_PORT:-2112}:2112"
+      - "${PROXY_PORT:-1080}:1080"
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2112/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+  
+  # ....................... #
+  
+  gateway:
+    <<: *service
+    build:
+      context: ./gateway
+    user: "0:0"
+    depends_on:
+      checker:
+        condition: service_healthy
+
+    network_mode: service:checker
+    volumes:
+      - gateway:/var/run
+  
+  # ....................... #
+  
+  selector:
+    <<: *service
+    build:
+      context: ./selector
+    command: ["sleep", "infinity"]
+    depends_on:
+      - gateway
+      - checker
+      
+    network_mode: service:checker
+    volumes:
+      - gateway:/var/run
+    environment:
+      XRAY_API: http://127.0.0.1:2112
+      HAPROXY_SOCKET: /var/run/haproxy.sock
+
+# ....................... #
+
+volumes:
+  checker:
+    driver: local
+
+  gateway:
+    driver: local

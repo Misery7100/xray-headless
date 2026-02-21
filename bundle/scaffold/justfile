@@ -1,0 +1,65 @@
+set quiet
+set shell := ["bash", "-cu"]
+
+# ----------------------- #
+
+_ref := "ghcr.io/misery7100/xray-headless"
+_sub_path := absolute_path("./subscriptions.conf")
+_name := "xray-headless"
+
+# ----------------------- #
+# Helpers
+
+# Replace path value in YAML file
+_yaml_parameter file name value kind="path":
+    yq -iy  '(.parameters[] | select(.name == "{{ name }}") | .source.{{ kind }}) = "{{ value }}"' {{ file }}
+
+
+# Update parameters
+_update-params:
+    just _yaml_parameter ./parameters.yaml subscription-url-newline {{ _sub_path }} path
+    porter parameters apply ./parameters.yaml
+
+# ----------------------- #
+# Bundle commands
+
+# Install bundle
+[arg("version", long, short="v")]
+install version="latest": _update-params
+    porter install {{ _name }} \
+        --reference {{ _ref }}:v{{ version }} \
+        --parameter-set xray-headless-config
+
+
+# Upgrade bundle
+upgrade: _update-params
+    porter upgrade {{ _name }} \
+        --parameter-set xray-headless-config
+
+
+# Uninstall bundle
+uninstall:
+    porter uninstall {{ _name }}
+
+# ----------------------- #
+# Commands within bundle
+
+# Get current proxy configuration
+current:
+    porter invoke --action current
+
+
+# List available proxies
+list:
+    porter invoke --action list
+
+
+# Set proxy configuration
+[arg("port", long, short="p", help="Port to set (direct assignment)")]
+[arg("name", long, short="n", help="Name to lookup and set (substring match)")]
+[arg("fastest", long, short="f", help="Select fastest proxy", value="true")]
+set port="" name="" fastest="":
+    porter invoke --action set \
+        --param select_port={{ port }} \
+        --param select_name={{ name }} \
+        --param select_fastest={{ fastest }}
