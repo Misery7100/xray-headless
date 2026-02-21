@@ -5,7 +5,7 @@ schemaVersion: 1.0.1
 # Metadata
 
 name: xray-headless
-version: 1.0.4
+version: 1.0.5
 registry: ghcr.io/misery7100
 
 # ....................... #
@@ -86,7 +86,23 @@ customActions:
     stateless: true
     modifies: false
 
+  list:
+    stateless: true
+    modifies: false
+
+  current:
+    stateless: true
+    modifies: false
+
   set:
+    stateless: true
+    modifies: false
+
+  ps:
+    stateless: true
+    modifies: false
+
+  logs:
     stateless: true
     modifies: false
 
