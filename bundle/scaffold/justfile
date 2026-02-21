@@ -27,7 +27,7 @@ _update-params:
 [arg("version", long, short="v")]
 install version="latest": _update-params
     porter install {{ _name }} \
-        --reference {{ _ref }}:v{{ version }} \
+        --reference {{ _ref }}:{{ version }} \
         --parameter-set xray-headless-config
 
 
@@ -63,3 +63,13 @@ set port="" name="" fastest="":
         --param select_port={{ port }} \
         --param select_name={{ name }} \
         --param select_fastest={{ fastest }}
+
+
+# Check status of the bundle
+ps:
+    porter invoke --action ps
+
+
+# Check logs of the bundle
+logs *args="":
+    porter invoke --action logs --param custom_args={{ args }}

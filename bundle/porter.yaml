@@ -69,6 +69,12 @@ parameters:
     type: boolean
     default: false
     applyTo: *apply-set
+  
+  - name: cutsom_args
+    type: string
+    default: ""
+    applyTo:
+      - logs
 
 # ....................... #
 # Commands
@@ -129,6 +135,21 @@ set:
         - "${ bundle.parameters.select_name }"
         - --fastest
         - "${ bundle.parameters.select_fastest }"
+
+ps:
+  - exec:
+      description: Check status of the bundle
+      command: just
+      arguments:
+        - ps
+        
+logs:
+  - exec:
+      description: Check logs of the bundle
+      command: just
+      arguments:
+        - logs
+        - "${ bundle.parameters.cutsom_args }"
 
 # ....................... #
 # Default commands
