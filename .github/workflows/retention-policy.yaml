@@ -15,5 +15,4 @@ jobs:
         with:
           package-name: xray-headless
           package-type: container
-          min-versions-to-keep: 2
-          delete-only-untagged-versions: true
+          ignore-versions: '^(latest|v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$)'
