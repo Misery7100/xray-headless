@@ -5,7 +5,7 @@ schemaVersion: 1.0.1
 # Metadata
 
 name: xray-headless
-version: 1.0.3
+version: 1.0.4
 registry: ghcr.io/misery7100
 
 # ....................... #
@@ -31,6 +31,8 @@ parameters:
       - uninstall
       - current
       - list
+      - ps
+      - logs
   
   - name: ui-port
     type: integer
@@ -66,11 +68,11 @@ parameters:
     applyTo: *apply-set
   
   - name: select_fastest
-    type: boolean
-    default: false
+    type: string
+    default: "false"
     applyTo: *apply-set
   
-  - name: cutsom_args
+  - name: custom_args
     type: string
     default: ""
     applyTo:
@@ -149,7 +151,7 @@ logs:
       command: just
       arguments:
         - logs
-        - "${ bundle.parameters.cutsom_args }"
+        - "${ bundle.parameters.custom_args }"
 
 # ....................... #
 # Default commands

@@ -32,5 +32,5 @@ build publish="false":
 # Publish the bundle.
 [working-directory("bundle")]
 publish: _login
-    porter publish
+    porter publish --force
     porter publish --tag latest --force

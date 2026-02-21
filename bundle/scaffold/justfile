@@ -40,18 +40,19 @@ upgrade: _update-params
 # Uninstall bundle
 uninstall:
     porter uninstall {{ _name }}
+    porter installations delete {{ _name }}
 
 # ----------------------- #
 # Commands within bundle
 
 # Get current proxy configuration
 current:
-    porter invoke --action current
+    porter invoke --action current {{ _name }}
 
 
 # List available proxies
 list:
-    porter invoke --action list
+    porter invoke --action list {{ _name }}
 
 
 # Set proxy configuration
@@ -59,17 +60,18 @@ list:
 [arg("name", long, short="n", help="Name to lookup and set (substring match)")]
 [arg("fastest", long, short="f", help="Select fastest proxy", value="true")]
 set port="" name="" fastest="":
-    porter invoke --action set \
-        --param select_port={{ port }} \
-        --param select_name={{ name }} \
-        --param select_fastest={{ fastest }}
+    porter invoke --action set {{ _name }} \
+        --param select_port="{{ port }}" \
+        --param select_name="{{ name }}" \
+        --param select_fastest="{{ fastest }}"
 
 
 # Check status of the bundle
 ps:
-    porter invoke --action ps
+    porter invoke --action ps {{ _name }}
 
 
 # Check logs of the bundle
 logs *args="":
-    porter invoke --action logs --param custom_args={{ args }}
+    porter invoke --action logs {{ _name }} \
+        --param custom_args="{{ args }}"
