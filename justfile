@@ -8,7 +8,7 @@ _reg := "ghcr.io"
 
 # ----------------------- #
 
-# Default
+# Default fallback
 _default:
     just --list
 
@@ -32,5 +32,5 @@ build publish="false":
 # Publish the bundle.
 [working-directory("bundle")]
 publish: _login
-    porter publish --force
+    porter publish
     porter publish --tag latest --force

@@ -17,4 +17,4 @@ jobs:
           image-names: xray-headless
           token: ${{ secrets.GITHUB_TOKEN }}
           tag-selection: untagged
-          cut-off: 1h
+          cut-off: 10min
