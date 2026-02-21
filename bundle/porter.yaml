@@ -92,7 +92,16 @@ scaffold:
       arguments:
         - -ceu
         - |
-          cp -n /scaffold/* /out/ || true
+          shopt -s nullglob
+          umask 0000
+
+          for f in /scaffold/*; do
+            bn=$(basename "$f")
+            out="/out/$bn"
+
+            rm -f "$out" 2>/dev/null || true
+            install -m 0666 "$f" "$out"
+          done
   
 current:
   - exec:
