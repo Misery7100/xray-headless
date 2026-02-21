@@ -11,10 +11,10 @@ jobs:
 
     name: Clean up old images
     steps:
-      - uses: snok/container-retention-policy@v3.0.1
+      - uses: actions/delete-package-versions@v5
         with:
-          account: user
-          image-names: xray-headless
+          package-name: xray-headless
+          package-type: container
+          min-versions-to-keep: 2
+          delete-only-untagged-versions: true
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag-selection: untagged
-          cut-off: 10min
