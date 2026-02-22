@@ -52,7 +52,6 @@ services:
     <<: *service
     build:
       context: ./selector
-    command: ["sleep", "infinity"]
     depends_on:
       - gateway
       - checker
