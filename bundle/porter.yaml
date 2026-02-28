@@ -5,7 +5,7 @@ schemaVersion: 1.0.1
 # Metadata
 
 name: xray-headless
-version: 1.0.6
+version: 1.0.7
 registry: ghcr.io/misery7100
 
 # ....................... #

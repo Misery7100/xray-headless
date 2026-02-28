@@ -53,8 +53,10 @@ services:
     build:
       context: ./selector
     depends_on:
-      - gateway
-      - checker
+      checker:
+        condition: service_healthy
+      gateway:
+        condition: service_started
       
     network_mode: service:checker
     volumes:
